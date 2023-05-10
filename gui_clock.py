@@ -1,5 +1,10 @@
-'''
 
+'''
+Author: Stephan Karas
+Date: 11.05.2023
+Description: This program defines a Clock class with methods to implement a timer and countdown. 
+It uses the customtkinter and tkinter modules to create a GUI that displays the current time, weekday,
+and date, and provides buttons to start and stop the timer and countdown, as well as an entry for selecting the file path for the timer.
 Dependencies: 
     - customtkinter
     - tkinter
@@ -196,8 +201,8 @@ class Clock:
             if self.repeating_every_second is not None:
                 root.after_cancel(self.repeating_every_second)
                 self.repeating_every_second = None
-
             print('countdown stopped')
+            
             return False
     
     # implementation of the countdown functionality
@@ -206,7 +211,7 @@ class Clock:
             if self.countdown_start_min == 0 and self.countdown_start_sec == 0: # if the minutes and seconds are 0, stop the countdown
                 self.countdown_running = False
                 self.countdown_button.configure(text="Start countdown", fg_color='#1F538D', hover_color='#204B7C')
-                #root.after_cancel(self.repeating_every_second) # cancel the repeating function
+                self.employ_error_message('Countdown stopped') # show a message box
                 print('countdown stopped')
                 return False
             elif self.countdown_start_sec == 0: # if the seconds are 0, decrement the minutes and set the seconds to 59
