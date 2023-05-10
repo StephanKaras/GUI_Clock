@@ -9,6 +9,12 @@ This program defines a `Clock` class with methods to implement a timer and count
 * `filedialog`
 
 ## How to Run the Program
+MAKE SURE TO:
+
+```
+pip install customtkinter
+```
+
 To run the program, execute the following command:
 
 ```
