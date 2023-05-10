@@ -40,8 +40,8 @@ class Clock:
         self.timer_start_time = None
         self.timer_end_time = None
         self.timer_duration = None
-        self.DEFAULT_TIMER_PATH = os.path.join(os.getcwd(), 'time.txt')
-        self.CHOSEN_TIMER_PATH = self.DEFAULT_TIMER_PATH
+        self.DEFAULT_TIMER_PATH = os.path.join(os.getcwd(), 'time.txt') # the default path for the timer file, which is in the same directory as the script, named time.txt
+        self.CHOSEN_TIMER_PATH = self.DEFAULT_TIMER_PATH 
 
         # countdown variables
         self.countdown_running = False
@@ -57,35 +57,39 @@ class Clock:
         self.weekday_label.pack(pady=0, padx=10)
 
         self.date_label = tk.CTkLabel(frame, text=str(self.date), font=("", 20)) # date label
-        self.date_label.pack(pady=5, padx=10)
+        self.date_label.pack(pady=(10, 20), padx=10)
         
         # timer widgets
         self.timer_frame = tk.CTkFrame(frame) # timer frame
-        self.timer_frame.pack(pady=5, padx=10) 
+        self.timer_frame.pack(pady=(5, 15), padx=10) 
 
         self.timer_button = tk.CTkButton(self.timer_frame, text='Start timer', command=self.toggle_timer) # timer button
-        self.timer_button.grid(row=1, column=0, padx=10, pady=5)
+        self.timer_button.grid(row=1, column=0, padx=(30, 0), pady=5)
 
         self.timer_path_entry = tk.CTkEntry(self.timer_frame, width=480, font=("", 11), placeholder_text=self.CHOSEN_TIMER_PATH) # timer path entry
-        self.timer_path_entry.bind('<KeyRelease>', lambda event: self.modify_path)
-        self.timer_path_entry.grid(row=0, column=0, padx=10, pady=5)
+        self.timer_path_entry.bind('<KeyRelease>', lambda event: self.modify_path()) # bind the modify_path function to the entry, which updates the path variable when the user changes the path
+        self.timer_path_entry.grid(row=0, column=0, padx=3, pady=5)
 
-        self.timer_path_chooser = tk.CTkButton(self.timer_frame, text='C', command=self.select_file, width=25) # timer path chooser button
-        self.timer_path_chooser.grid(row=0, column=1)
+        self.timer_path_chooser = tk.CTkButton(self.timer_frame, text='🔍', command=self.select_file, width=25) # timer path chooser button
+        self.timer_path_chooser.grid(row=0, column=1, padx=0)
         
 
         # countdown widgets
         countdown_frame = tk.CTkFrame(frame) # countdown frame
         countdown_frame.pack(pady=5, padx=10)
         self.countdown_min = tk.CTkEntry(countdown_frame, width=50, font=("", 20), placeholder_text='Min') # countdown minutes
-        # center it under the timer button
-        self.countdown_min.grid(row=0, column=0, padx=10, pady=5)
+        self.countdown_min.grid(row=0, column=0, padx=5, pady=5)# center it under the timer button
+
+        self.countdown_label = tk.CTkLabel(countdown_frame, text=':', font=("", 20)) # countdown label
+        self.countdown_label.grid(row=0, column=1, padx=0, pady=5)
+
+
         self.countdown_sec = tk.CTkEntry(countdown_frame, width=50, font=("", 20), placeholder_text='Sec') # countdown Seconds
-        self.countdown_sec.grid(row=0, column=1, padx=10, pady=5)
+        self.countdown_sec.grid(row=0, column=2, padx=5, pady=5)
 
         self.update() # update the time every second
 
-
+    # upadte the time every second
     def update(self):
         self.time = time.localtime()
         self.weekday = self.time.tm_wday
@@ -95,7 +99,6 @@ class Clock:
         root.after(1000, self.update) # update the time every second
     
     # implementation of the timer
-        
     def toggle_timer(self):
         if not self.timer_running:
             self.timer_running = True
@@ -110,18 +113,23 @@ class Clock:
             path = self.CHOSEN_TIMER_PATH
             self.write_timer(path)
             print('timer stopped')  
-            self.timer_button.configure(text="Start timer", fg_color='blue', hover_color='#00008b') 
+            self.timer_button.configure(text="Start timer", fg_color='#1F538D', hover_color='#204B7C') 
 
+    # open a file dialog to select the file to write the timer to
     def select_file(self):
             file_path = filedialog.askopenfilename(initialdir="/", title="Select file", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
             self.CHOSEN_TIMER_PATH = str(file_path)
             self.timer_path_entry.configure(placeholder_text=self.CHOSEN_TIMER_PATH)
+            
 
+    # update the path variable when the user changes the path in the entry field 
     def modify_path(self):
         self.CHOSEN_TIMER_PATH = self.timer_path_entry.get()
-        self.timer_path_entry.configure(placeholder_text=self.CHOSEN_TIMER_PATH)
+        self.timer_path_entry.delete(0, tk.END)
+        self.timer_path_entry.insert(0, self.CHOSEN_TIMER_PATH)
 
 
+    # write the timer to the file
     def write_timer(self, path):
         # if path exists, append to it. If not, create it, write the header and then append to it
         if os.path.exists(path):
@@ -138,11 +146,6 @@ class Clock:
                 print('timer written to file')
                 return True
 
-
-        '''with open(path, 'a') as f:
-            f.write(f'{self.timer_start_time.tm_hour}:{self.timer_start_time.tm_min}:{self.timer_start_time.tm_sec} - {self.timer_end_time.tm_hour}:{self.timer_end_time.tm_min}:{self.timer_end_time.tm_sec} - {self.timer_duration}\n')
-        print('timer written to file')
-        return True'''
         
     # implementation of the countdown
 
